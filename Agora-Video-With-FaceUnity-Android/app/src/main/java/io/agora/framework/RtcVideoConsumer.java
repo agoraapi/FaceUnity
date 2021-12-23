@@ -8,6 +8,7 @@ import io.agora.capture.framework.modules.channels.VideoChannel;
 import io.agora.capture.framework.modules.consumers.IVideoConsumer;
 import io.agora.capture.video.camera.VideoCaptureFrame;
 import io.agora.capture.video.camera.VideoModule;
+import io.agora.rtc.gl.RendererCommon;
 import io.agora.rtc.mediaio.IVideoFrameConsumer;
 import io.agora.rtc.mediaio.IVideoSource;
 import io.agora.rtc.mediaio.MediaIO;
@@ -27,6 +28,8 @@ public class RtcVideoConsumer implements IVideoConsumer, IVideoSource {
     private volatile VideoModule mVideoModule;
     private int mChannelId;
 
+    public boolean mRemoteMirror = false;
+
     public RtcVideoConsumer() {
         this(ChannelManager.ChannelID.CAMERA);
     }
@@ -38,14 +41,21 @@ public class RtcVideoConsumer implements IVideoConsumer, IVideoSource {
 
     @Override
     public void onConsumeFrame(VideoCaptureFrame frame, VideoChannel.ChannelContext context) {
+        Log.i(TAG, "onConsumeFrame: " + frame.mirrored);
         if (mValidInRtc) {
             int format = frame.format.getTexFormat() == GLES20.GL_TEXTURE_2D
                     ? AgoraVideoFrame.FORMAT_TEXTURE_2D
                     : AgoraVideoFrame.FORMAT_TEXTURE_OES;
             if (mRtcConsumer != null) {
+                float[] tx;
+                if (frame.mirrored && mRemoteMirror) {
+                    tx = RendererCommon.multiplyMatrices(frame.textureTransform, RendererCommon.horizontalFlipMatrix());
+                } else {
+                    tx = frame.textureTransform;
+                }
                 mRtcConsumer.consumeTextureFrame(frame.textureId, format,
                         frame.format.getWidth(), frame.format.getHeight(),
-                        frame.rotation, frame.timestamp, frame.textureTransform);
+                        frame.rotation, frame.timestamp, tx);
             }
         }
     }
