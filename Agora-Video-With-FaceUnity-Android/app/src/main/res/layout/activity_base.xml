@@ -25,15 +25,26 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/max_space"
         android:layout_marginEnd="@dimen/max_space"/>
+
     <ImageView
         android:id="@+id/btn_switch_camera"
         android:layout_width="38dp"
         android:layout_height="38dp"
-        android:layout_marginTop="@dimen/max_space"
         android:layout_marginStart="@dimen/max_space"
-        android:src="@mipmap/camera_normal"
+        android:layout_marginTop="@dimen/max_space"
+        android:onClick="onClick"
         android:scaleType="fitXY"
-        android:onClick="onClick"/>
+        android:src="@mipmap/camera_normal" />
+
+    <Button
+        android:id="@+id/btn_mirror"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="@dimen/max_space"
+        android:layout_marginTop="@dimen/max_space"
+        android:onClick="onClick"
+        android:scaleType="fitXY"
+        android:src="@mipmap/camera_normal" />
 
 
     <com.faceunity.nama.ui.FaceUnityView

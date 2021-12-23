@@ -56,6 +56,7 @@ public class FUChatActivity extends RtcBasedActivity implements RtcEngineEventHa
 
     private FrameLayout mRemoteViewContainer;
     private TextView mTrackingText;
+    private RtcVideoConsumer consumer;
 
 
     private int mRemoteUid = -1;
@@ -90,7 +91,8 @@ public class FUChatActivity extends RtcBasedActivity implements RtcEngineEventHa
 
     private void initRoom() {
         initVideoModule();
-        rtcEngine().setVideoSource(new RtcVideoConsumer());
+        consumer = new RtcVideoConsumer();
+        rtcEngine().setVideoSource(consumer);
         joinChannel();
     }
 
@@ -150,6 +152,9 @@ public class FUChatActivity extends RtcBasedActivity implements RtcEngineEventHa
             case R.id.btn_switch_camera:
                 preprocessor.skipFrame();
                 onCameraChangeRequested();
+                break;
+            case R.id.btn_mirror:
+                consumer.mRemoteMirror = true;
                 break;
         }
     }
